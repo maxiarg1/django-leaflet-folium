@@ -4,17 +4,18 @@
 
 <div class="row">
     <div class="col-md-4">
-        <h3>Nuestras Sucursales</h3>
-        <p class="lead">Estas son nuestras sucursales donde los atenderemos con profesionalismo y dedicación</p>
+        <h3>Dispositivos</h3>
+        <p class="lead">Subtitulo</p>
 
         <ol class="list-group">
 
             {% for location in locations %}
-            <li class="list-group-item d-flex justify-content-between align-items-start">
+            <li class="list-group-item d-flex justify-content-between align-items-start" data-ping-responde="{{ location.ping_responde|yesno:'true,false' }}">
                 <div class="ms-2 me-auto">
-                <div class="fw-bold">{{ location.name }}</div>
-                {{ location.address }}
+                    <div class="fw-bold">{{ location.name }}</div>
+                    {{ location.address }}
                 </div>
+                <span class="badge bg-{{ location.ping_responde|yesno:'success,danger' }}">{{ location.ping_responde|yesno:'Responde,No responde' }}</span>
             </li>
             {% endfor %}
         </ol>
@@ -23,5 +24,20 @@
         {{ map|safe }}
     </div>
 </div>
+
+<script>
+    var markers = document.querySelectorAll('.leaflet-marker-icon');
+
+    markers.forEach(function(marker, index) {
+        var listItem = document.querySelector('[data-ping-responde="' + index + '"]');
+        var pingResponde = listItem.dataset.pingResponde === 'true';
+
+        if (pingResponde) {
+            marker.style.filter = 'hue-rotate(120deg)';
+        } else {
+            marker.style.filter = 'hue-rotate(0deg)';
+        }
+    });
+</script>
 
 {% endblock %}
