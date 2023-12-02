@@ -6,7 +6,7 @@ class Location(models.Model):
     lat = models.FloatField(verbose_name='Latitud')
     lng = models.FloatField(verbose_name='Longitud')
     direccion_ip = models.GenericIPAddressField(default='0.0.0.0', protocol='IPv4')
-    ping_responde = models.BooleanField(default=0)
+    ping_responde = models.BooleanField(default=False)
 
     class Meta:
         verbose_name = 'Sucursal'

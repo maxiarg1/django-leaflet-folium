@@ -1,9 +1,20 @@
 from django.contrib import admin
+from django import forms
+from django.forms.widgets import CheckboxInput
 from .models import Location, UbicacionInicial
 
-admin.site.register(Location)
+class LocationForm(forms.ModelForm):
+    class Meta:
+        model = Location
+        fields = '__all__'  # Incluye todos los campos del modelo
+        widgets = {
+            'ping_responde': CheckboxInput(),
+        }
 
-class UbicacionAdmin(admin.ModelAdmin):
-    list_display = ['latitud', 'longitud']
+class LocationAdmin(admin.ModelAdmin):
+    form = LocationForm
+    list_display = ['name', 'address', 'lat', 'lng', 'direccion_ip', 'ping_responde']
+    # ... otros ajustes si es necesario
 
-admin.site.register(UbicacionInicial, UbicacionAdmin)
+admin.site.register(Location, LocationAdmin)
+admin.site.register(UbicacionInicial)

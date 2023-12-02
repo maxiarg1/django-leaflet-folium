@@ -26,18 +26,26 @@
 </div>
 
 <script>
-    var markers = document.querySelectorAll('.leaflet-marker-icon');
+    function actualizarDatosPing() {
+        // Realiza una solicitud AJAX para obtener la información de ping
+        fetch('')
+            .then(response => response.json())
+            .then(data => {
+                // Actualiza la información de ping en la página
+                data.ping_info.forEach(item => {
+                    const listItem = document.querySelector(`[data-location-id="${item.id}"]`);
+                    if (listItem) {
+                        listItem.dataset.pingResponde = item.ping_responde.toString();
+                    }
+                });
 
-    markers.forEach(function(marker, index) {
-        var listItem = document.querySelector('[data-ping-responde="' + index + '"]');
-        var pingResponde = listItem.dataset.pingResponde === 'true';
+                // Programa la próxima actualización después de un intervalo de tiempo (por ejemplo, 1 minuto)
+                setTimeout(actualizarDatosPing, 60000);  // 60000 milisegundos = 1 minuto
+            })
+            .catch(error => console.error('Error al obtener datos de ping:', error));
+    }
 
-        if (pingResponde) {
-            marker.style.filter = 'hue-rotate(120deg)';
-        } else {
-            marker.style.filter = 'hue-rotate(0deg)';
-        }
-    });
+    // Llama a la función inicialmente para iniciar el proceso de actualización
+    actualizarDatosPing();
 </script>
-
 {% endblock %}

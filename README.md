@@ -39,3 +39,11 @@
 13. Una vez preparados los dos archivos html, me queda definir la vista en el archivo views.py y luego poder generar el path a la ruta en el archivo urls.py de la aplicación
 14. Luego, voy a modificar el urls.py del proyecto para que pueda acceder al archivo urls.py de la aplicación. De esta forma, podría ya correr el servidor, para poder ver el esquema que definí en el home.html
 15. Luego volvemos al archivo views.py para representar el mapa en nuestra página home.html
+
+
+Tengo que ver la manera de implementar el ping sin que me clave toda la pagina
+Agregar tooltip
+Ver que el usuario cree vectores (lineas para crear enlaces o conexiones entre hosts)
+Alertas? por correo o telegram
+traceroute grafico
+agregar a cada host la loopback y las interfaces
