@@ -2,18 +2,11 @@ from django.shortcuts import render
 from .models import Location, UbicacionInicial
 import folium
 from folium.plugins import FastMarkerCluster
-from .ping_utils import ping_device
+
 
 def home(request):
     # Recupero todas las sucursales
     locations = Location.objects.all()
-
-    for location in locations:
-        try:
-            location.ping_responde = ping_device(location.direccion_ip)
-        except requests.RequestException:
-            # Manejo de errores si la solicitud de ping falla
-            location.ping_responde = False
 
     ubicacion_inicial = UbicacionInicial.objects.first()
 
@@ -38,9 +31,10 @@ def home(request):
  # Creamos los marcadores con popups
     for location in locations:
         coordinates = (location.lat, location.lng)
-        popup_content = f'Sucursal: {location.name}<br>Dirección: {location.address}'
+        popup_content = f'Lugar: {location.name}<br>IP: {location.direccion_ip}'
         marker_color = 'green' if location.ping_responde else 'red'
-        folium.Marker(location=coordinates, popup=folium.Popup(html=popup_content, parse_html=True),
+        tooltip = f'Lugar: {location.name}<br>IP: {location.direccion_ip}'
+        folium.Marker(location=coordinates, popup=folium.Popup(html=popup_content, tooltip=tooltip, parse_html=True),
                     icon=folium.Icon(color=marker_color)).add_to(initialMap)
 
     context = {'map':initialMap._repr_html_(), 'locations':locations}
