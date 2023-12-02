@@ -2,6 +2,8 @@ from django.shortcuts import render
 from .models import Location, UbicacionInicial
 import folium
 from folium.plugins import FastMarkerCluster
+import os
+from django.conf import settings
 
 
 def home(request):
@@ -33,9 +35,28 @@ def home(request):
         coordinates = (location.lat, location.lng)
         popup_content = f'Lugar: {location.name}<br>IP: {location.direccion_ip}'
         marker_color = 'green' if location.ping_responde else 'red'
-        tooltip = f'Lugar: {location.name}<br>IP: {location.direccion_ip}'
+        tooltip = "hola mundo"
         folium.Marker(location=coordinates, popup=folium.Popup(html=popup_content, tooltip=tooltip, parse_html=True),
                     icon=folium.Icon(color=marker_color)).add_to(initialMap)
 
-    context = {'map':initialMap._repr_html_(), 'locations':locations}
+#insertar GeoJSON
+     # Ruta al archivo GeoJSON en tu proyecto Django
+    geojson_file_path = os.path.join(settings.BASE_DIR, 'map/templates/geojson/enlace_ph-ch.geojson')
+# Verifica si el archivo existe antes de cargarlo
+    if os.path.exists(geojson_file_path):
+        # Cargar GeoJSON desde el archivo
+        geojson_layer = folium.GeoJson(geojson_file_path, name="Mi GeoJSON Overlay", style_function=lambda feature: {
+        'color': 'red',    # Cambiar el color de la línea (puedes usar nombres de colores o códigos hexadecimales)
+        'weight': 2,        # Cambiar el grosor de la línea
+        'opacity': 1,       # Cambiar la opacidad de la línea (1 para completamente visible, 0 para invisible)
+    }
+)
+        geojson_layer.add_to(initialMap)
+    
+    else:
+        print(f"El archivo GeoJSON '{geojson_file_path}' no existe.")
+
+
+
+    context = {'map': initialMap._repr_html_(), 'locations': locations}
     return render(request, 'map/home.html', context)

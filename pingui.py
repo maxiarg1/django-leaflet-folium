@@ -89,22 +89,3 @@ def main():
 if __name__ == "__main__":
     main()
 
-'''
-def pinga():
-    time.sleep(10)
-    # Dirección IP a la que le harás ping
-    host = "google.com"
-
-    # Realizar ping y obtener tiempo de respuesta
-    response_time = round(ping(host,unit='ms'),2)
-
-    print(host, response_time)
-    # Crear la tabla si no existe
-    crear_tabla()
-
-    # Insertar resultado del ping en la tabla
-    insertar_resultado_ping(host, response_time)
-
-while True:
-    pinga()
-'''
