@@ -23,3 +23,18 @@ class UbicacionInicial(models.Model):
 
     def __str__(self):
         return f'Latitud: {self.latitud}, Longitud: {self.longitud}'
+    
+class GeoJSONFile(models.Model):
+    file = models.FileField(upload_to='geojson_files/', verbose_name='Archivo GeoJSON')
+    color = models.CharField(max_length=30, default='black', verbose_name='Color de líneas')
+    weight = models.IntegerField(default=2, verbose_name='Grosor de líneas')
+    opacity = models.FloatField(default=0.4, verbose_name='Opacidad de líneas')
+    fillColor = models.CharField(max_length=30, default='red', verbose_name='Color de relleno')
+    fillOpacity = models.FloatField(default=0.1, verbose_name='Opacidad de relleno')
+
+    class Meta:
+        verbose_name = 'Archivo GeoJSON'
+        verbose_name_plural = 'Archivos GeoJSON'
+
+    def __str__(self):
+        return f'Archivo GeoJSON: {self.file.name}'

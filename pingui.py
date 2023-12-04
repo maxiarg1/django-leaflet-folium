@@ -44,7 +44,27 @@ def insertar_resultado_ping(direccion_ip, tiempo_respuesta):
     conn.commit()
     conn.close()
 
+    # Actualizar el campo ping_responde en la tabla map_location
+    actualizar_ping_responde(direccion_ip, tiempo_respuesta)
 
+def actualizar_ping_responde(direccion_ip, tiempo_respuesta):
+    # Conectar a la base de datos
+    conn = sqlite3.connect('db.sqlite3')
+    cursor = conn.cursor()
+
+    # Determinar si el ping fue exitoso
+    ping_exitoso = tiempo_respuesta != 6969
+
+    # Actualizar el campo ping_responde en la tabla map_location
+    cursor.execute('''
+        UPDATE map_location
+        SET ping_responde = ?
+        WHERE direccion_ip = ?
+    ''', (ping_exitoso, direccion_ip))
+
+    # Guardar los cambios y cerrar la conexión
+    conn.commit()
+    conn.close()
 
 def obtener_direcciones_ip():
     # Conectar a la base de datos
