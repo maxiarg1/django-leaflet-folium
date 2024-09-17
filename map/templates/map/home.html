@@ -4,24 +4,63 @@
 
 <div class="row">
     <div class="col-md-4">
-        <h3>Nuestras Sucursales</h3>
-        <p class="lead">Estas son nuestras sucursales donde los atenderemos con profesionalismo y dedicación</p>
+        <h3>Dispositivos</h3>
+        <p class="lead">Subtitulo</p>
 
         <ol class="list-group">
-
             {% for location in locations %}
-            <li class="list-group-item d-flex justify-content-between align-items-start">
+            <li class="list-group-item d-flex justify-content-between align-items-start" data-ping-responde="{{ location.ping_responde|yesno:'true,false' }}">
                 <div class="ms-2 me-auto">
-                <div class="fw-bold">{{ location.name }}</div>
-                {{ location.address }}
+                    <div class="fw-bold">{{ location.name }}</div>
+                    {{ location.address }}
                 </div>
+                <span class="badge bg-{{ location.ping_responde|yesno:'success,danger' }}">{{ location.ping_responde|yesno:'Responde,No responde' }}</span>
             </li>
             {% endfor %}
         </ol>
     </div>
     <div class="col-md-8">
-        {{ map|safe }}
+        <div id="map-container">
+            {{ map|safe }}
+        </div>
     </div>
 </div>
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script>
+    $(document).ready(function () {
+        function actualizarMarcadores() {
+    // Obtener la ubicación y el zoom actuales del mapa
+    var latitud = map.getCenter().lat;
+    var longitud = map.getCenter().lng;
+    var zoom = map.getZoom();
+
+    // Realizar una solicitud AJAX al servidor para obtener la actualización de los marcadores
+    $.ajax({
+        url: '/actualizar_marcadores/',
+        type: 'GET',
+        data: { latitud: latitud, longitud: longitud, zoom: zoom },
+        success: function(data) {
+            // Limpiar los marcadores existentes en el mapa
+            map.eachLayer(function (layer) {
+                if (layer instanceof L.Marker) {
+                    map.removeLayer(layer);
+                }
+            });
+
+            // Agregar nuevos marcadores al mapa
+            $(data).appendTo('#map-container');
+        },
+        error: function(error) {
+            console.log('Error al actualizar los marcadores:', error);
+        }
+    });
+}
+
+
+// Llama a la función actualizarMarcadores cada 5 segundos (5000 milisegundos)
+setInterval(actualizarMarcadores, 5000);
+    });
+</script>
 
 {% endblock %}
